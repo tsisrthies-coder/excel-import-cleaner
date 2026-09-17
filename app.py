@@ -45,12 +45,13 @@ if uploaded_files and st.button("PRÉPARER LE(S) FICHIER(S)", type="primary"):
                 output_name = f"{base}_PRET_A_IMPORTER{ext}"
                 output_path = os.path.join(tmpdirname, output_name)
                 
+                # Instanciation avec arguments positionnels
                 cleaner = ExcelCleaner(
                     input_path,
-                    selected_sheets=None,
-                    options={'auto_mode': auto_mode},
-                    log_callback=lambda m: None,
-                    progress_callback=lambda p, s=None: None
+                    None,
+                    {'auto_mode': auto_mode},
+                    lambda m: None,
+                    lambda p, s=None: None
                 )
                 cleaner.process(output_path)
                 cleaned_files.append((output_name, output_path))
