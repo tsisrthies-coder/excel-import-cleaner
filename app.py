@@ -1,6 +1,7 @@
 import os
 import tempfile
 import zipfile
+import openpyxl
 import streamlit as st
 from core.validator import validate_file
 from core.excel_cleaner import ExcelCleaner
@@ -45,10 +46,18 @@ if uploaded_files and st.button("PRÉPARER LE(S) FICHIER(S)", type="primary"):
                 output_name = f"{base}_PRET_A_IMPORTER{ext}"
                 output_path = os.path.join(tmpdirname, output_name)
                 
-                # Instanciation avec arguments positionnels
+                # Récupération automatique de toutes les feuilles du fichier
+                try:
+                    wb = openpyxl.load_workbook(input_path, read_only=True)
+                    sheets = wb.sheetnames
+                    wb.close()
+                except Exception:
+                    sheets = []
+                
+                # Exécution du nettoyage
                 cleaner = ExcelCleaner(
                     input_path,
-                    None,
+                    sheets,
                     {'auto_mode': auto_mode},
                     lambda m: None,
                     lambda p, s=None: None
